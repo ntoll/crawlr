@@ -1,4 +1,4 @@
-from os import environ
+from os import environ, path
 import sys
 from screens import *
 import pygame
@@ -12,6 +12,7 @@ class BaseState(object):
     """The base state that all other states subclass."""
 
     def __init__(self, window=None):
+        self.music = None
         self.window = window
         self.clock = pygame.time.Clock()
         # sound setup
@@ -24,7 +25,6 @@ class BaseState(object):
             pygame.mixer.init(freq, bitsize, channels, buffer_size)
             # set volume from 0 -> 1.0
             pygame.mixer.music.set_volume(0.8)
-            pygame.mixer.music.load(self.music)
 
     def run(self):
         """The main game loop that listens for events and draws the screen."""
@@ -64,9 +64,14 @@ class InitState(Screen, BaseState):
 class TitleState(BaseState):
     """A game state for the title screen."""
 
-    def __init__(self):
+    def __init__(self, music='DarkMenu.ogg'):
         BaseState.__init__(self)
         self.screen = TitleScreen()
+        self.music = path.join('data/sounds/music', music)
+        pygame.mixer.music.load(self.music)
+        pygame.mixer.music.play(-1)
+
+
 
     def check_events(self):
         """
@@ -87,13 +92,17 @@ class TitleState(BaseState):
 class WorldState(BaseState):
     """A game state for the main world screen."""
 
-    def __init__(self, map_name):
+    def __init__(self, map_name, music='EpicGame.ogg'):
         BaseState.__init__(self)
         self.map_name = map_name
         self.screen = WorldScreen(self.map_name)
         self.party = self.screen.party
         self.npcs = self.screen.npcs
         self.player = self.party.chars['hero']
+
+        self.music = path.join('data/sounds/music', music)
+        pygame.mixer.music.load(self.music)
+        pygame.mixer.music.play(-1)
 
     def check_events(self):
         """Check for user input on the world screen."""
