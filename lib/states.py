@@ -1,6 +1,12 @@
 from os import environ
 import sys
 from screens import *
+import pygame
+
+
+if not pygame.mixer:
+    print 'Warning, sound disabled'
+
 
 class BaseState(object):
     """The base state that all other states subclass."""
@@ -8,6 +14,17 @@ class BaseState(object):
     def __init__(self, window=None):
         self.window = window
         self.clock = pygame.time.Clock()
+        # sound setup
+        if pygame.mixer:
+            freq = 44100 # audio CD quality
+            bitsize = -16 # unsigned 16 bit
+            channels = 2 # 1 is mono, 2 is stereo
+            buffer_size = 1024 # number of samples
+            # initialise
+            pygame.mixer.init(freq, bitsize, channels, buffer_size)
+            # set volume from 0 -> 1.0
+            pygame.mixer.music.set_volume(0.8)
+            pygame.mixer.music.load(self.music)
 
     def run(self):
         """The main game loop that listens for events and draws the screen."""
