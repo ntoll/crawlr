@@ -1,4 +1,5 @@
 import pygame
+from pygame import joystick
 from constants import *
 from data import *
 from gui import *
@@ -13,6 +14,11 @@ class Screen(object):
         pygame.init()
         pygame.display.set_caption(GAME_NAME)
         pygame.mouse.set_visible(False)
+        pygame.joystick.init()
+        for stick_no in range(joystick.get_count()):
+            stick = joystick.Joystick(stick_no)
+            print "Initialising joystick %d" % stick_no
+            stick.init()
         if FULL_SCREEN: fullscreen = FULLSCREEN
         else: fullscreen = False
         self.window = pygame.display.set_mode(WINDOW_SIZE, fullscreen,
@@ -60,7 +66,7 @@ class TitleScreen(Screen):
         Screen.__init__(self)
         text1 = Font("menu", 24, (255,0,0), "Title Screen Goes Here")
         text2 = Font("menu", 16, (255,255,255),
-            "Press 'n' to start a new game.")
+            "Press 'n' or joystick start to start a new game.")
         self.add([text1, text2])
 
     def align(self, items):

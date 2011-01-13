@@ -65,6 +65,12 @@ class TitleState(BaseState):
                 elif event.key == K_n:
                     self.screen.destroy()
                     self.switch(WorldState(STARTING_MAP))
+            elif event.type == JOYBUTTONDOWN:
+                if event.button == JOY_LEFT_TOP:
+                    self.exit()
+                if event.button == JOY_START:
+                    self.screen.destroy()
+                    self.switch(WorldState(STARTING_MAP))
 
 
 class WorldState(BaseState):
