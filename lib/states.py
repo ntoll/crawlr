@@ -2,6 +2,7 @@ from os import environ, path
 import sys
 from screens import *
 import pygame
+import sounds
 
 
 if not pygame.mixer:
@@ -25,6 +26,9 @@ class BaseState(object):
             pygame.mixer.init(freq, bitsize, channels, buffer_size)
             # set volume from 0 -> 1.0
             pygame.mixer.music.set_volume(0.8)
+
+            sounds.sounds.setup()            
+
 
     def run(self):
         """The main game loop that listens for events and draws the screen."""
