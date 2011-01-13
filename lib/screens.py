@@ -97,6 +97,9 @@ class WorldScreen(Screen):
         self.layers = pygame.sprite.LayeredDirty()
         for sprite in self.all_sprites:
             self.layers.add(sprite)
+        # critical line to make the npc appear!
+        # only took 50 mins to find this!    
+        self.layers.add(self.npcs.sprites)
 
     def draw(self):
         """Draws the sprites to the screen and updates the window."""

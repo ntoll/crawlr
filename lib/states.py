@@ -77,6 +77,16 @@ class WorldState(BaseState):
         self.party = self.screen.party
         self.npcs = self.screen.npcs
         self.player = self.party.chars['hero']
+	
+    def run_npcs(self):
+    	"""
+    	this currently turns the NPC but to face a random direction
+    	but does not move it
+    	"""
+        import random
+        dirs = ['up', 'down', 'left', 'right']
+        for char in self.npcs.chars:
+            self.npcs.chars[char].direction = random.choice(dirs)
 
     def check_events(self):
         """Check for user input on the world screen."""
@@ -88,6 +98,10 @@ class WorldState(BaseState):
             # Listen for key presses
             elif event.type == KEYDOWN:
                 if event.key == GAME_QUIT: self._exit()
+
+                # press t to make the little man turn!
+                elif event.key == K_t:
+                    self.run_npcs()
 
                 # Example of showing a dialog window.
                 elif event.key == K_d:

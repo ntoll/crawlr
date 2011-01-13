@@ -173,6 +173,116 @@ class NPCSprite(CharacterSprite):
             "left", True, (128,128), char, PLAYER_COLLIDE_SIZE,
             PLAYER_COLLIDE_OFFSET, PLAYER_WALK_ANIMATION_SPEED,
             PLAYER_WALK_SPEED)
+      
+    # 6 methods copied from PlayerSprite
+    # The idea is that NPCs with need to move and do things like check if moves are possible
+    # with respect to the terrain, walls etc
+    
+	# copied from PlayerSprite	
+    def move(self):
+        """Move the NPC."""
+
+        self.dirty = 1
+        direction = self.direction
+        map_rect = self.map.layers['terrain'].rect
+
+        # If no collision, move the player.
+        if not self.collide[direction]:
+            if direction == "up":
+                if self.rect.centery < PLAYER_SCROLL_TOP and (
+                        self.scroll_pos[1] < 0):
+                    self.scroll_pos[1] += self.movement
+                    self.map.move([0, self.movement])
+                else:
+                    self.rear_rect = self.rect.move([0, -16])
+                    self.rect.move_ip(0, -self.movement)
+            elif direction == "down":
+                if self.rect.centery > PLAYER_SCROLL_BOTTOM and (
+                        map_rect.height + self.scroll_pos[1] > CAMERA_SIZE[1]):
+                    self.scroll_pos[1] -= self.movement
+                    self.map.move([0, -self.movement])
+                else:
+                    self.rear_rect = self.rect.move([0, 16])
+                    self.rect.move_ip(0, self.movement)
+            elif direction == "left":
+                if self.rect.centerx < PLAYER_SCROLL_LEFT and (
+                        self.scroll_pos[0] < 0):
+                    self.scroll_pos[0] += self.movement
+                    self.map.move([self.movement, 0])
+                else:
+                    self.rear_rect = self.rect
+                    self.rect.move_ip(-self.movement, 0)
+            elif direction == "right":
+                if self.rect.centerx > PLAYER_SCROLL_RIGHT and (
+                        map_rect.width + self.scroll_pos[0] > CAMERA_SIZE[0]):
+                    self.scroll_pos[0] -= self.movement
+                    self.map.move([-self.movement, 0])
+                else:
+                    self.rear_rect = self.rect
+                    self.rect.move_ip(self.movement, 0)
+
+            # Move the player's collision rectangle.
+            self.collide_rect.left = self.rect.left - self.scroll_pos[0] + (
+                self.collide_offset[0])
+            self.collide_rect.bottom = self.rect.bottom - self.scroll_pos[1] + (
+                self.collide_offset[1])
+
+	# copied from PlayerSprite	
+    def move_check(self):
+        """Check for walls, terrain, region, and random encounters."""
+
+        directions = {
+            'up':       self.collide_rect.move(0, -self.movement),
+            'down':     self.collide_rect.move(0, self.movement),
+            'left':     self.collide_rect.move(-self.movement, 0),
+            'right':    self.collide_rect.move(self.movement, 0) }
+        for key, rect in directions.iteritems():
+            self.check_walls(key, rect)
+            self.check_terrain(rect)
+            self.check_region(rect)
+        self.check_encounter()
+
+	# copied from PlayerSprite	
+    def check_walls(self, key, rect):
+        """Check if movement is blocked by a wall."""
+
+        if pygame.Rect(rect).collidelistall(self.map.nowalk) != []:
+            self.collide[key] = True
+            if self.collide[self.direction]: self.stop = True
+        else: self.collide[key] = False
+
+	# copied from PlayerSprite	
+    def check_terrain(self, rect):
+        """Check the type of terrain the sprite moved to."""
+
+        for type in self.map.terrain_list:
+            for subtype in type:
+                if subtype in self.map.types:
+                    if pygame.Rect(rect).collidelistall(
+                        self.map.types[subtype]) != []:
+                        self.current_terrain = type[0]
+
+	# copied from PlayerSprite	
+    def check_region(self, rect):
+        """Check the region the sprite moved to."""
+
+        for region in self.map.map_regions:
+            if pygame.Rect(rect).collidelistall(
+                self.map.regions[region]) != []:
+                    self.current_region = region
+
+	# copied from PlayerSprite	
+    def check_encounter(self):
+        """Check for a random encounter."""
+
+        spaces = PLAYER_MOVEMENT_NORMAL
+        if self.rect.collidelistall(self.map.danger) != []:
+            spaces = PLAYER_MOVEMENT_DANGER
+        self.current_space += 1
+        if self.current_space == spaces * self.width:
+            self.current_space = 0
+            if Die(PLAYER_ENCOUNTER_ROLL).roll() == 1:
+                pygame.time.set_timer(BATTLE_EVENT, 100)
 
 
 class PlayerSprite(CharacterSprite):
