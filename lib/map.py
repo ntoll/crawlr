@@ -112,7 +112,7 @@ class Map(object):
                 line = ""
             self.layer_list.append(temp_layer)
             temp_layer = []
-            import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
 
     def get_size(self):
         """Get the size of the map."""
