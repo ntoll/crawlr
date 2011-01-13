@@ -126,8 +126,8 @@ class CharacterSprite(pygame.sprite.DirtySprite):
             else:
                 self.move()
                 self.draw()
-            
-            
+
+
 class PartySprite(CharacterSprite):
     """A sprite for party characters."""
 
@@ -292,8 +292,8 @@ class PlayerSprite(CharacterSprite):
             self.current_space = 0
             if Die(PLAYER_ENCOUNTER_ROLL).roll() == 1:
                 pygame.time.set_timer(BATTLE_EVENT, 100)
-            
-            
+
+
 class MonsterSprite(CharacterSprite):
 
     def __init__(self, screen, char):
