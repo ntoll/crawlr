@@ -1,13 +1,34 @@
-from os import environ
+from os import environ, path
 import sys
 from screens import *
+import pygame
+import sounds
+
+
+if not pygame.mixer:
+    print 'Warning, sound disabled'
+
 
 class BaseState(object):
     """The base state that all other states subclass."""
 
     def __init__(self, window=None):
+        self.music = None
         self.window = window
         self.clock = pygame.time.Clock()
+        # sound setup
+        if pygame.mixer:
+            freq = 44100 # audio CD quality
+            bitsize = -16 # unsigned 16 bit
+            channels = 2 # 1 is mono, 2 is stereo
+            buffer_size = 1024 # number of samples
+            # initialise
+            pygame.mixer.init(freq, bitsize, channels, buffer_size)
+            # set volume from 0 -> 1.0
+            pygame.mixer.music.set_volume(0.8)
+
+            sounds.sounds.setup()            
+
 
     def run(self):
         """The main game loop that listens for events and draws the screen."""
@@ -47,9 +68,14 @@ class InitState(Screen, BaseState):
 class TitleState(BaseState):
     """A game state for the title screen."""
 
-    def __init__(self):
+    def __init__(self, music='DarkMenu.ogg'):
         BaseState.__init__(self)
         self.screen = TitleScreen()
+        self.music = path.join('data/sounds/music', music)
+        pygame.mixer.music.load(self.music)
+        pygame.mixer.music.play(-1)
+
+
 
     def check_events(self):
         """
@@ -70,7 +96,7 @@ class TitleState(BaseState):
 class WorldState(BaseState):
     """A game state for the main world screen."""
 
-    def __init__(self, map_name):
+    def __init__(self, map_name, music='EpicGame.ogg'):
         BaseState.__init__(self)
         self.map_name = map_name
         self.screen = WorldScreen(self.map_name)
@@ -87,6 +113,10 @@ class WorldState(BaseState):
         dirs = ['up', 'down', 'left', 'right']
         for char in self.npcs.chars:
             self.npcs.chars[char].direction = random.choice(dirs)
+
+        self.music = path.join('data/sounds/music', music)
+        pygame.mixer.music.load(self.music)
+        pygame.mixer.music.play(-1)
 
     def check_events(self):
         """Check for user input on the world screen."""

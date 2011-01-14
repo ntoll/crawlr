@@ -4,7 +4,9 @@ from data import *
 from gui import *
 from map import Map
 from manager import *
+import sounds
 from battle import Battle
+import random
 
 class Screen(object):
     """The base screen class that other screens inherit from."""
@@ -108,6 +110,13 @@ class WorldScreen(Screen):
         rects = self.layers.draw(self.window)
         pygame.display.update(rects)
 
+        if random.random() < 0.01:
+            sounds.sounds.FEAR.play()            
+
+        if random.random() < 0.003:
+            sounds.sounds.BABY.play()            
+
+
     def destroy(self):
         """Destroy the current screen."""
 
@@ -129,6 +138,14 @@ class BattleScreen(Screen, Battle):
         text2 = Font("menu", 16, (255,255,255),
             "Press 'Esc' to go back to the game.")
         self.add([text1, text2])
+        print "init battle"
+        sounds.sounds.SWORD.play()
+
+    def destroy(self):
+        sounds.sounds.SWORD.stop()
+        super(BattleScreen,self).destroy()
+        sounds.sounds.BLOOD.play()            
+        sounds.sounds.APPLAUSE.play()            
 
     def align(self, items):
         items[0].rect.center = [ WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2-20 ]
