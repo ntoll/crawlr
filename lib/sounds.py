@@ -14,5 +14,11 @@ class Sounds(object):
         self.BABY = pygame.mixer.Sound(SFX_DIR + 'baby.ogg')
         self.BOOM = pygame.mixer.Sound('data/boom.wav')
 
+    def enable(self):
+        pygame.mixer.unpause()
+
+    def disable(self):
+        pygame.mixer.pause()
+
 sounds = Sounds()
 
