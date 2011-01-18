@@ -59,8 +59,11 @@ class BaseState(object):
         self.can_play_music = not self.can_play_music
         if self.can_play_music:
             pygame.mixer.music.play(-1)
+            text = Font("menu", 24, (255,0,0), "Music Unmuted")
         else:
             pygame.mixer.music.stop()
+            text = Font("menu", 24, (255,0,0), "Music Muted")
+        self.screen.add([text])
 
     def toggle_sfx(self):
         """This doesn't do exactly what we want, it stops currently
