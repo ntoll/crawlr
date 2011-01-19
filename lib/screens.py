@@ -30,6 +30,11 @@ class Screen(object):
             self.layers.add(sprite)
         self.align(items)
 
+
+    def display_notification(self, item, duration):
+        self.layers.add(item)
+
+
     def draw(self):
         """Draw items to the screen."""
 

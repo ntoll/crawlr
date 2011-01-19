@@ -63,7 +63,7 @@ class BaseState(object):
         else:
             pygame.mixer.music.stop()
             text = Font("menu", 24, (255,0,0), "Music Muted")
-        self.screen.add([text])
+        self.screen.display_notification(text, 0)
 
     def toggle_sfx(self):
         """This doesn't do exactly what we want, it stops currently
