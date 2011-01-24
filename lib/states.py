@@ -75,8 +75,6 @@ class TitleState(BaseState):
         pygame.mixer.music.load(self.music)
         pygame.mixer.music.play(-1)
 
-
-
     def check_events(self):
         """
         Title screen events:
@@ -104,8 +102,12 @@ class WorldState(BaseState):
 
     def __init__(self, map_name, music='EpicGame.ogg'):
         BaseState.__init__(self)
+        if len(sys.argv) > 1:
+            filename = sys.argv[1]
+        else:
+            filename = None
         self.map_name = map_name
-        self.screen = WorldScreen(self.map_name)
+        self.screen = WorldScreen(self.map_name, filename)
         self.party = self.screen.party
         self.npcs = self.screen.npcs
         self.player = self.party.chars['hero']

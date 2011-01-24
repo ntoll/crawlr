@@ -8,7 +8,7 @@ from terrain import *
 class Map(object):
     """The game world."""
 
-    def __init__(self, level):
+    def __init__(self, level, filename=None):
         self.nowalk = []
         self.danger = []
         self.types = {}
@@ -23,7 +23,11 @@ class Map(object):
         self.layer_list = []
         self.layers = {}
         self.config = load_map(level)
-        self.create_map()
+
+        if filename:
+            self.load(filename)
+        else:
+            self.create_map()
 
     def configure(self):
         """Reads and stores keys from the map config."""
@@ -58,6 +62,57 @@ class Map(object):
 
         self.configure()
         self.create_layers()
+        self.draw_map()
+
+    def save(self, filename):
+        out = open(filename, "wt")
+
+        for layer in self.layer_list:
+            for line in layer:
+                out.write(line + "\n")
+            out.write("\n")
+
+    def load(self, filename):
+        self.configure()
+
+        self.layers['terrain'] = MapSprite(self.tile_size[0],
+            self.num_tiles[0], self.tile_size[1], self.num_tiles[1])
+        self.layers['foreground'] = MapSprite(self.tile_size[0],
+            self.num_tiles[0], self.tile_size[1], self.num_tiles[1])
+
+        self.layer_list = []
+
+        filein = open(filename, "rt")
+
+        layer = []
+        row = 0
+        col = 0
+        current_layer = 0
+
+        for line in filein.readlines():
+            line = line.strip()
+            if len(line) == 0:
+                row = 0
+                col = 0
+                self.layer_list.append(layer)
+                layer = []
+                current_layer += 1
+            else:
+                if current_layer == 1:
+                    col = 0
+                    print line
+                    for c in line:
+                        offset = (col * self.tile_size[0], row * self.tile_size[1])
+                        self.tile_dict[offset] = c
+                        self.set_terrain(offset)
+                        col += 1
+
+                layer.append(line)
+                row += 1
+
+        if layer:
+            self.layer_list.append(layer)
+
         self.draw_map()
 
     def create_layers(self):
@@ -112,6 +167,8 @@ class Map(object):
                 line = ""
             self.layer_list.append(temp_layer)
             temp_layer = []
+
+        #self.save("test.txt")
 
     def get_size(self):
         """Get the size of the map."""

@@ -79,12 +79,12 @@ class TitleScreen(Screen):
 class WorldScreen(Screen):
     """The main game screen with a world to wander around."""
 
-    def __init__(self, map_name):
+    def __init__(self, map_name, filename=None):
         Screen.__init__(self)
         self.load_screen = LoadScreen()
         self.load_screen.draw()
         self.camera = pygame.Rect((0,0), CAMERA_SIZE)
-        self.map = Map(map_name)
+        self.map = Map(map_name, filename)
         self.party = PartyManager(self)
         self.npcs = NPCManager(self)
         self.gui = StatsWindow(self.party.sprites)

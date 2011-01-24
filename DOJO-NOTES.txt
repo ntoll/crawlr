@@ -1,0 +1,7 @@
+Pass in the test.txt filename to use the custom map.
+
+e.g.::
+
+    $ python play.py test.txt
+
+

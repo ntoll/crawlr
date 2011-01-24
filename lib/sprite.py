@@ -322,7 +322,7 @@ class PlayerSprite(CharacterSprite):
 
         if pygame.Rect(rect).collidelistall(self.map.nowalk) != []:
             self.collide[key] = True
-            if self.collide[self.direction]: self.stop = True
+            if self.collide.get(self.direction): self.stop = True
         else: self.collide[key] = False
 
     def check_terrain(self, rect):
