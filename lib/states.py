@@ -27,7 +27,7 @@ class BaseState(object):
             # set volume from 0 -> 1.0
             pygame.mixer.music.set_volume(0.8)
 
-            sounds.sounds.setup()            
+            sounds.sounds.setup()
 
 
     def run(self):
@@ -129,8 +129,8 @@ class WorldState(BaseState):
 
         self.move_keys = self.player.move_keys
         for event in pygame.event.get():
-            if event.type == QUIT: self.exit()
-
+            if event.type == QUIT:
+                self.exit()
             # Listen for key presses
             elif event.type == KEYDOWN:
                 if event.key == GAME_QUIT: self._exit()
