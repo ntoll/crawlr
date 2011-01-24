@@ -89,15 +89,13 @@ class WorldScreen(Screen):
         self.npcs = NPCManager(self)
         self.gui = StatsWindow(self.party.sprites)
         self.party.add("hero")
-        self.party.add("ando")
         self.npcs.add("npc")
-        print "WorldScreen __init__ add_sprites, world = ", map_name
-        self.add_sprites()
         self.dialog_text = "Sample dialog text."
-        self.map.scroll(self.camera, 'hero', self.party.chars)
+        self.map.scroll(self.camera, self.party.chars['hero'])
 
     def add_sprites(self):
-        self.chars = self.party.sprites
+        self.chars = pygame.sprite.Group([
+            self.party.sprites ])
         self.all_sprites = pygame.sprite.OrderedUpdates([
             self.map.layers['terrain'],
             self.chars,
@@ -107,9 +105,10 @@ class WorldScreen(Screen):
         self.layers = pygame.sprite.LayeredDirty()
         for sprite in self.all_sprites:
             self.layers.add(sprite)
-            print "add sprite ", sprite
-        print "add sprites ", self.chars
-        
+        # critical line to make the npc appear!
+        # only took 50 mins to find this!    
+        self.layers.add(self.npcs.sprites)
+
     def draw(self):
         """Draws the sprites to the screen and updates the window."""
 

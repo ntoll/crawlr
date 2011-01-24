@@ -336,10 +336,9 @@ class Map(object):
         else:
             self.regions[tile] = []
 
-    def scroll(self, camera, name, players):
+    def scroll(self, camera, player):
         """Scroll the map to keep the player visible."""
 
-        player = players[name]
         b_x, b_y = player.rect.center
         camera.center = (b_x, b_y)
         b_x, b_y = camera.topleft
@@ -359,13 +358,5 @@ class Map(object):
             b_x - (map_w - camera_w) / 2
         camera.topleft = [ -b_x, -b_y ]
         self.move([ camera[0], camera[1] ])
-        """
         player.rect.move_ip([ camera[0], camera[1] ])
         player.scroll_pos = [ camera[0], camera[1] ]
-        """
-        for char in players:
-            player = players[char]
-            player.rect.move_ip([ camera[0], camera[1] ])
-            player.scroll_pos = [ camera[0], camera[1] ]
-
-
