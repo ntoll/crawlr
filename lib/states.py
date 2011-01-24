@@ -103,20 +103,20 @@ class WorldState(BaseState):
         self.party = self.screen.party
         self.npcs = self.screen.npcs
         self.player = self.party.chars['hero']
-	
+        self.music = path.join('data/sounds/music', music)
+        pygame.mixer.music.load(self.music)
+        pygame.mixer.music.play(-1)
+
     def run_npcs(self):
-    	"""
-    	this currently turns the NPC but to face a random direction
-    	but does not move it
-    	"""
+        """
+        this currently turns the NPC but to face a random direction
+        but does not move it
+        """
         import random
         dirs = ['up', 'down', 'left', 'right']
         for char in self.npcs.chars:
             self.npcs.chars[char].direction = random.choice(dirs)
 
-        self.music = path.join('data/sounds/music', music)
-        pygame.mixer.music.load(self.music)
-        pygame.mixer.music.play(-1)
 
     def check_events(self):
         """Check for user input on the world screen."""
