@@ -1,41 +1,7 @@
-Team 4 Notes:
-
 Pass in the test.txt filename to use the custom map.
 
 e.g.::
 
     $ python play.py test.txt
 
-Team 5 Notes:
 
-I had another dig around the code, and managed to get the second player 
-sprite appearing.
-
-Fixed some other stuff along the way:
-* dodgy initialisations (calling __init__ twice, once on object 
-creation, once explicitly)
-* too many collections / groups objects, unnecessary
-* some weird dead code
-* the "left" bug that was crashing it now and then
-* commented out BATTLE_EVENT processing, to make development nicer for now
-* added a keypress "b" that writes some logging to console
-
-The trick to making the second player appear, you will hardly believe, 
-was hidden away in the Map.scroll() method, which contrary to what you 
-might expect, actually moves the player into the visible part of the 
-map. So I modified it to do this for ALL players (not just the main 
-player). Also it seems only player.rect is actually used ..  player.x 
-and player.y are just startup values and then get ignored (bad design).
-
-Looked at lots of other things along the way, eg.  pygame.Sprite, 
-pygame.Layer, dirty flag processing, etc.  So quite educational.
-
-If we get the code from the other half of Group 5, then player 2 could 
-actually move around .. maybe next dojo ..
-(at the moment they get dragged around by the screen, it's not too bad)
-
-cheers
-Adrian
-
-ps. Python files attached, since I'm not sure of full git details,
-you can git diff them or something.
