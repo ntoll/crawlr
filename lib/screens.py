@@ -36,6 +36,11 @@ class Screen(object):
             self.layers.add(sprite)
         self.align(items)
 
+
+    def display_notification(self, item, duration):
+        self.layers.add(item)
+
+
     def draw(self):
         """Draw items to the screen."""
 
@@ -74,7 +79,7 @@ class TitleScreen(Screen):
     def align(self, items):
         items[0].rect.center = [ WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2-20 ]
         items[1].rect.center = [ WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2+20 ]
-
+        #TODO: make this handle any size list
 
 class WorldScreen(Screen):
     """The main game screen with a world to wander around."""

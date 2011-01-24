@@ -26,8 +26,12 @@ class BaseState(object):
             pygame.mixer.init(freq, bitsize, channels, buffer_size)
             # set volume from 0 -> 1.0
             pygame.mixer.music.set_volume(0.8)
-
+            self.can_play_music = True
+            self.can_play_sfx = True
             sounds.sounds.setup()
+        else:
+            self.can_play_music = False
+            self.can_play_sfx = False
 
 
     def run(self):
@@ -42,6 +46,34 @@ class BaseState(object):
     def switch(self, state):
         self.state = state
         self.run()
+
+
+    def check_base_events(self, event):
+        if event.type == KEYDOWN:
+            if event.key == K_m:
+                self.toggle_music()
+            elif event.key == K_s:
+                self.toggle_sfx()
+
+    def toggle_music(self):
+        self.can_play_music = not self.can_play_music
+        if self.can_play_music:
+            pygame.mixer.music.play(-1)
+            text = Font("menu", 24, (255,0,0), "Music Unmuted")
+        else:
+            pygame.mixer.music.stop()
+            text = Font("menu", 24, (255,0,0), "Music Muted")
+        self.screen.display_notification(text, 0)
+
+    def toggle_sfx(self):
+        """This doesn't do exactly what we want, it stops currently
+        playing sounds but wont disable sfx."""
+        self.can_play_sfx = not self.can_play_sfx
+        if self.can_play_sfx:
+            sounds.sounds.enable()
+        else:
+            sounds.sounds.disable()
+
 
     def show_debug(self, fps):
         """Print debugging info to console."""
@@ -95,7 +127,7 @@ class TitleState(BaseState):
                 if event.button == JOY_START:
                     self.screen.destroy()
                     self.switch(WorldState(STARTING_MAP))
-
+            self.check_base_events(event)
 
 class WorldState(BaseState):
     """A game state for the main world screen."""
@@ -113,7 +145,8 @@ class WorldState(BaseState):
         self.player = self.party.chars['hero']
         self.music = path.join('data/sounds/music', music)
         pygame.mixer.music.load(self.music)
-        pygame.mixer.music.play(-1)
+        if self.can_play_music: 
+            pygame.mixer.music.play(-1)
 
     def run_npcs(self):
         """
@@ -208,6 +241,7 @@ class WorldState(BaseState):
                 self.player.move_keys = []
                 self.player.stop = True
                 self.switch(DialogState(self))
+            self.check_base_events(event)
 
     def player_input(self, moving, name, key):
         """Controls key input to the player character."""
@@ -272,6 +306,7 @@ class BattleState(BaseState):
             elif event.type == JOYBUTTONDOWN:
                 if event.button == JOY_LEFT_TOP:
                     self._exit()
+            self.check_base_events(event)
 
     def _exit(self):
         """Quits the battle screen returning to the world screen."""
@@ -306,6 +341,7 @@ class DialogState(BaseState):
                     self.dialog.text.scroll("up")
                 elif event.key == DIALOG_SCROLL_DOWN:
                     self.dialog.text.scroll("down")
+            self.check_base_events(event)
 
     def _exit(self):
         """Quits the battle screen returning to the world screen."""
