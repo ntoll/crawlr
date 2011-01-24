@@ -152,8 +152,13 @@ class WorldState(BaseState):
                     self.party.remove("test")
 
                 elif event.key == K_s:
-                    self.npcs.add("npc")
+                    self.party.add("ando")
 
+                # Debug
+                elif event.key == K_b:
+                    for char in self.party.chars:
+                        c = self.party.chars[char]
+                        print "[%s] %s" % (c.name, c.rect)
 
                 # Example of changing the test character's statistics.
                 elif event.key == K_s:
