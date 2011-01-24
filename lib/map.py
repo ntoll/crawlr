@@ -130,8 +130,8 @@ class Map(object):
         for layer in range(0, LAYERS_NUM):
             row_num = 0
             tile_num = 0
-            for row in range(0, self.num_tiles[1] + 1):
-                for tile in range(0, self.num_tiles[0] + 1):
+            for row in range(0, self.num_tiles[1]):
+                for tile in range(0, self.num_tiles[0]):
 
                     # Add the 'X' tile to the edges to block the player from
                     # walking off of the map."
@@ -167,6 +167,7 @@ class Map(object):
                 line = ""
             self.layer_list.append(temp_layer)
             temp_layer = []
+            # import pdb; pdb.set_trace()
 
         #self.save("test.txt")
 

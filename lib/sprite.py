@@ -315,7 +315,16 @@ class PlayerSprite(CharacterSprite):
             self.check_walls(key, rect)
             self.check_terrain(rect)
             self.check_region(rect)
+            self.check_object(rect)
         self.check_encounter()
+
+    def check_object(self, rect):
+        """Check if the player has encountered an object."""
+        print "Me:", rect
+        obj = Rect(2500, 50, 500, 500)
+        if pygame.Rect(rect).collidelistall([obj]):
+            import sys
+            sys.exit("OMG, you found it!")
 
     def check_walls(self, key, rect):
         """Check if movement is blocked by a wall."""
