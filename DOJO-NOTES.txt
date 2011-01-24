@@ -6,7 +6,7 @@ e.g.::
 
     $ python play.py test.txt
 
-Team 5 Notes:
+Team 5 Notes (Doesn't appear to work):
 
 I had another dig around the code, and managed to get the second player 
 sprite appearing.
