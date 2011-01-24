@@ -91,6 +91,12 @@ class TitleState(BaseState):
                 elif event.key == K_n:
                     self.screen.destroy()
                     self.switch(WorldState(STARTING_MAP))
+            elif event.type == JOYBUTTONDOWN:
+                if event.button == JOY_LEFT_TOP:
+                    self.exit()
+                if event.button == JOY_START:
+                    self.screen.destroy()
+                    self.switch(WorldState(STARTING_MAP))
 
 
 class WorldState(BaseState):
@@ -170,6 +176,25 @@ class WorldState(BaseState):
                     HERO_MOVE_RIGHT):
                         self.player_input(False, pygame.key.name, event.key)
 
+            elif event.type == JOYAXISMOTION and event.value:
+                key = None
+                if event.axis == JOY_H_AXIS:
+                    key = HERO_MOVE_RIGHT if event.value > 0 else HERO_MOVE_LEFT
+                elif event.axis == JOY_V_AXIS:
+                    key = HERO_MOVE_DOWN if event.value > 0 else HERO_MOVE_UP
+                if key:
+                    self.player_input(True, pygame.key.name, key)
+
+            elif event.type == JOYAXISMOTION:
+                if event.axis in (JOY_H_AXIS, JOY_V_AXIS):
+                    self.player_input(False, pygame.key.name, HERO_MOVE_UP)
+                    self.player_input(False, pygame.key.name, HERO_MOVE_DOWN)
+                    self.player_input(False, pygame.key.name, HERO_MOVE_RIGHT)
+                    self.player_input(False, pygame.key.name, HERO_MOVE_LEFT)
+
+            elif event.type == JOYBUTTONDOWN:
+                if event.button == JOY_LEFT_TOP: self._exit()
+
             # Switch to the battle state when a battle event is received
             elif event.type == BATTLE_EVENT:
                 self.player.move_keys = []
@@ -242,6 +267,9 @@ class BattleState(BaseState):
             if event.type == QUIT: self.exit()
             elif event.type == KEYDOWN:
                 if event.key == GAME_QUIT: self._exit()
+            elif event.type == JOYBUTTONDOWN:
+                if event.button == JOY_LEFT_TOP:
+                    self._exit()
 
     def _exit(self):
         """Quits the battle screen returning to the world screen."""
